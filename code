@@ -1,0 +1,177 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  FileText, 
+  Zap, 
+  MessageSquare, 
+  CheckCircle, 
+  Upload, 
+  Youtube, 
+  BrainCircuit, 
+  ArrowRight,
+  Loader2
+} from 'lucide-react';
+
+/**
+ * ONE-TAP STUDY BUDDY - MVP
+ * Built for GDG TechSprint 2026
+ * Team: Overclocked | Leader: Arya Mittal
+ */
+
+const App = () => {
+  const [activeTab, setActiveTab] = useState('upload');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [result, setResult] = useState(null);
+  const [url, setUrl] = useState('');
+
+  // Simulated AI Processing Logic
+  const handleProcess = () => {
+    if (!url && activeTab === 'upload') return;
+    setIsProcessing(true);
+    
+    // Simulating Gemini 1.5 Flash Latency
+    setTimeout(() => {
+      setResult({
+        summary: "This document explores the fundamental shifts in global economics due to AI integration. Key takeaways include the transition from manual labor to cognitive automation and the importance of data-driven decision making.",
+        quiz: [
+          { q: "What is the primary driver of the economic shift discussed?", a: "AI Integration" },
+          { q: "What replaces manual labor in this new model?", a: "Cognitive Automation" }
+        ]
+      });
+      setIsProcessing(false);
+      setActiveTab('result');
+    }, 2000);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans">
+      {/* Navigation */}
+      <nav className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="bg-blue-600 p-1.5 rounded-lg">
+              <Zap size={20} className="text-white" />
+            </div>
+            <span className="font-bold text-xl tracking-tight">One-Tap <span className="text-blue-500">Study Buddy</span></span>
+          </div>
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
+            <a href="#" className="hover:text-white transition">Features</a>
+            <a href="#" className="hover:text-white transition">Tech Stack</a>
+            <div className="h-4 w-px bg-slate-700"></div>
+            <span className="text-slate-500">Team: Overclocked</span>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-4xl mx-auto px-6 py-12">
+        {/* Header Section */}
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Stop Searching. Start Learning.
+          </h1>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+            Leveraging <span className="text-blue-400 font-semibold">Gemini 1.5 Flash</span> to transform 50-page PDFs and hours of video into instant mastery.
+          </p>
+        </div>
+
+        {/* Action Card */}
+        <div className="bg-slate-800 border border-slate-700 rounded-3xl overflow-hidden shadow-2xl">
+          {/* Tabs */}
+          <div className="flex border-b border-slate-700">
+            <button 
+              onClick={() => setActiveTab('upload')}
+              className={`flex-1 py-4 flex items-center justify-center gap-2 font-semibold transition ${activeTab === 'upload' ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'hover:bg-slate-750 text-slate-400'}`}
+            >
+              <Upload size={18} /> Upload PDF
+            </button>
+            <button 
+              onClick={() => setActiveTab('youtube')}
+              className={`flex-1 py-4 flex items-center justify-center gap-2 font-semibold transition ${activeTab === 'youtube' ? 'bg-slate-700 text-blue-400 border-b-2 border-blue-400' : 'hover:bg-slate-750 text-slate-400'}`}
+            >
+              <Youtube size={18} /> YouTube Link
+            </button>
+          </div>
+
+          <div className="p-8">
+            {activeTab === 'upload' || activeTab === 'youtube' ? (
+              <div className="space-y-6">
+                <div className="border-2 border-dashed border-slate-700 rounded-2xl p-10 text-center hover:border-blue-500/50 transition cursor-pointer bg-slate-900/50">
+                  {activeTab === 'upload' ? (
+                    <>
+                      <FileText className="mx-auto mb-4 text-slate-500" size={48} />
+                      <p className="text-slate-300">Drag and drop your study materials here</p>
+                      <p className="text-slate-500 text-sm mt-2">Support for PDF, DOCX, and TXT</p>
+                    </>
+                  ) : (
+                    <div className="max-w-md mx-auto">
+                      <Youtube className="mx-auto mb-4 text-red-500" size={48} />
+                      <input 
+                        type="text" 
+                        placeholder="Paste YouTube URL here..." 
+                        className="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <button 
+                  onClick={handleProcess}
+                  disabled={isProcessing}
+                  className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.01] active:scale-[0.99]"
+                >
+                  {isProcessing ? (
+                    <><Loader2 className="animate-spin" /> Gemini is thinking...</>
+                  ) : (
+                    <><BrainCircuit size={20} /> Generate One-Tap Summary</>
+                  )}
+                </button>
+              </div>
+            ) : null}
+
+            {activeTab === 'result' && result && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="bg-blue-500/10 border border-blue-500/20 p-6 rounded-2xl">
+                  <h3 className="text-blue-400 font-bold mb-3 flex items-center gap-2">
+                    <Zap size={18} /> AI Recursive Summary
+                  </h3>
+                  <p className="text-slate-300 leading-relaxed">{result.summary}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {result.quiz.map((item, idx) => (
+                    <div key={idx} className="bg-slate-900 p-5 rounded-xl border border-slate-700">
+                      <span className="text-xs font-bold text-slate-500 uppercase">Question {idx + 1}</span>
+                      <p className="font-semibold mt-1 mb-3 text-slate-200">{item.q}</p>
+                      <div className="text-sm bg-green-500/10 text-green-400 p-2 rounded border border-green-500/20">
+                        {item.a}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button 
+                  onClick={() => setActiveTab('upload')}
+                  className="text-slate-500 hover:text-white text-sm flex items-center gap-2 transition"
+                >
+                  <ArrowRight size={14} className="rotate-180" /> Process another document
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer info */}
+        <div className="mt-12 text-center text-slate-500 text-sm">
+          <p>© 2026 Team Overclocked - Arya Mittal</p>
+          <div className="flex justify-center gap-4 mt-2">
+            <span className="flex items-center gap-1"><CheckCircle size={14} className="text-green-500" /> Grounded AI</span>
+            <span className="flex items-center gap-1"><CheckCircle size={14} className="text-green-500" /> Multi-modal</span>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default App;
